@@ -57,12 +57,12 @@ void Game::Update() {
   int new_x = static_cast<int>(pacman.pos_x);
   int new_y = static_cast<int>(pacman.pos_y);
 
-  // Check if there's food over here
-  if (food.x == new_x && food.y == new_y) {
-    score++;
-    // Grow pacman and increase speed.
-    pacman.speed += 0.02;
-  }
+  // // Check if there's food over here
+  // if (food.x == new_x && food.y == new_y) {
+  //   score++;
+  //   // Grow pacman and increase speed.
+  //   pacman.speed_ += 0.02;
+  // }
 }
 
 int Game::GetScore() const { return score; }

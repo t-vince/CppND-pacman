@@ -4,7 +4,9 @@
 #include "pacman.h"
 
 void Controller::ChangeDirection(Pacman &pacman, Pacman::Direction input) const {
-  pacman.direction = input;
+  pacman.Move(std::move(input));
+  //pacman.Move(input);
+  //pacman.direction = input;
   return;
 }
 
@@ -16,19 +18,19 @@ void Controller::HandleInput(bool &running, Pacman &pacman) const {
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_UP:
-          ChangeDirection(pacman, Pacman::Direction::kUp);
+          ChangeDirection(pacman, Pacman::Direction::Up);
           break;
 
         case SDLK_DOWN:
-          ChangeDirection(pacman, Pacman::Direction::kDown);
+          ChangeDirection(pacman, Pacman::Direction::Down);
           break;
 
         case SDLK_LEFT:
-          ChangeDirection(pacman, Pacman::Direction::kLeft);
+          ChangeDirection(pacman, Pacman::Direction::Left);
           break;
 
         case SDLK_RIGHT:
-          ChangeDirection(pacman, Pacman::Direction::kRight);
+          ChangeDirection(pacman, Pacman::Direction::Right);
           break;
       }
     }

@@ -2,7 +2,8 @@
 
 
 Initial game baand setup based on: https://github.com/udacity/CppND-Capstone-Snake-Game
-
+Pacman sprites based on sprites from Google pacman game: http://blogoscoped.com/archive/2010-05-22-n54.html
+Useful sprites tutorial: https://www.programmersranch.com/2014/03/sdl2-animations-with-sprite-sheets.html?m=1
 
 ## Dependencies for Running Locally
 * cmake >= 3.7

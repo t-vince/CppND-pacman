@@ -18,6 +18,8 @@ class Renderer {
  private:
   SDL_Window *sdl_window;
   SDL_Renderer *sdl_renderer;
+  //SDL_Surface *spritesheet_;
+  SDL_Texture *spritesheet_ = NULL;
 
   const std::size_t screen_width;
   const std::size_t screen_height;

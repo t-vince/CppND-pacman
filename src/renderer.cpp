@@ -1,6 +1,9 @@
 #include "renderer.h"
 #include <iostream>
 #include <string>
+#include <SDL_image.h>
+
+#define SPRITES_PATH "./assets/pacman_sprites.bmp"
 
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height,
@@ -10,13 +13,13 @@ Renderer::Renderer(const std::size_t screen_width,
       grid_width(grid_width),
       grid_height(grid_height) {
   // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+  if (SDL_Init(SDL_INIT_VIDEO) < 0 || SDL_Init(IMG_INIT_PNG) < 0) {
     std::cerr << "SDL could not initialize.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
 
   // Create Window
-  sdl_window = SDL_CreateWindow("pacman Game", SDL_WINDOWPOS_CENTERED,
+  sdl_window = SDL_CreateWindow("Pac-Man Game", SDL_WINDOWPOS_CENTERED,
                                 SDL_WINDOWPOS_CENTERED, screen_width,
                                 screen_height, SDL_WINDOW_SHOWN);
 
@@ -31,10 +34,29 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "Renderer could not be created.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
+
+  // Initialize spritesheet
+//   spritesheet_ = SDL_LoadBMP("assets/pacman-sprites.png");
+  
+//   if (nullptr == spritesheet_) {
+//     std::cerr << "Sprites could not be loaded.\n";
+//     std::cerr << " SDL_Error: " << SDL_GetError() << "\n";
+//   }
+  SDL_Surface *_surfaceBMP = SDL_LoadBMP(SPRITES_PATH);
+  spritesheet_ = SDL_CreateTextureFromSurface(sdl_renderer, _surfaceBMP);
+  //spritesheet_ = IMG_LoadTexture(sdl_renderer, SPRITES_PATH);
+  if (nullptr == spritesheet_) {
+        std::cerr << "image cannot load" << "\n";
+        std::cerr << "IMG_Error: " << IMG_GetError() << "\n";
+    }
 }
 
 Renderer::~Renderer() {
+  //SDL_FreeSurface(spritesheet_);
+  SDL_DestroyTexture(spritesheet_);
+  SDL_DestroyRenderer(sdl_renderer);
   SDL_DestroyWindow(sdl_window);
+  IMG_Quit();
   SDL_Quit();
 }
 
@@ -44,7 +66,7 @@ void Renderer::Render(Pacman const pacman, SDL_Point const &food) {
   block.h = screen_height / grid_height;
 
   // Clear screen
-  SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
+  SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF);
   SDL_RenderClear(sdl_renderer);
 
   // Render food
@@ -54,14 +76,20 @@ void Renderer::Render(Pacman const pacman, SDL_Point const &food) {
   SDL_RenderFillRect(sdl_renderer, &block);
 
   // Render pacman
-  block.x = static_cast<int>(pacman.pos_x) * block.w;
-  block.y = static_cast<int>(pacman.pos_y) * block.h;
-  if (pacman.alive) {
-    SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
-  } else {
-    SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
-  }
-  SDL_RenderFillRect(sdl_renderer, &block);
+//   block.x = static_cast<int>(pacman.pos_x) * block.w;
+//   block.y = static_cast<int>(pacman.pos_y) * block.h;
+//   if (pacman.alive) {
+//     SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
+//   } else {
+//     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
+//   }
+//  SDL_RenderFillRect(sdl_renderer, &block);
+  //SDL_BlitSurface(spritesheet_, &pacman.sprite, sdl_window, *pacman.sprite);
+  // SDL_Rect srcrect = { 0, 0, 17, 17 };
+  // SDL_Rect dstrect = { 10, 10, 15, 15 };
+  //std::cout << pacman.sprite.x << " " << pacman.sprite.y << " " << pacman.sprite.w << " " << pacman.sprite.h << "\n";
+  //std::cout << pacman.position.x << " " << pacman.position.y << " " << pacman.position.w << " " << pacman.position.h << "\n";
+  SDL_RenderCopy(sdl_renderer, spritesheet_, &pacman.sprite, &pacman.position);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
