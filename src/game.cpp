@@ -18,6 +18,13 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
+  // Add  ghosts
+  int grid_height = pacman.grid_width;
+  int grid_width = pacman.grid_height;
+  ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, 1));
+  ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, 2));
+  ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, 3));
+
   while (running) {
     frame_start = SDL_GetTicks();
 

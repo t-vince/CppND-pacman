@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "renderer.h"
 #include "pacman.h"
+#include "ghost.h"
 
 class Game {
  public:
@@ -18,6 +19,7 @@ class Game {
  private:
   Pacman pacman;
   SDL_Point food;
+  std::vector<std::unique_ptr<Ghost>> ghosts_;
 
   std::random_device dev;
   std::mt19937 engine;
