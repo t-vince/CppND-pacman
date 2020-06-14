@@ -83,10 +83,11 @@ void Renderer::Render(Pacman const &pacman,
 
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
+  SDL_Rect foodSquare{0, 0, 3, 3};
   for (auto const& f : food) {
-    block.x = f.x * block.w;
-    block.y = f.y * block.h;
-    SDL_RenderFillRect(sdl_renderer, &block);
+    foodSquare.x = f.x * block.w + block.w / 2;
+    foodSquare.y = f.y * block.h + block.h / 2;
+    SDL_RenderFillRect(sdl_renderer, &foodSquare);
   }
 
   // Render ghosts
