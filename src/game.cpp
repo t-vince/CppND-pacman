@@ -58,11 +58,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 }
 
 void Game::Update() {
-  if (!pacman_.alive) {
-    std::cout << "Game Over" << "\n";
-    std::cout << "Final score: " << GetScore() << "\n";
-    return;
-  }
+  if (!pacman_.alive) return;
 
   if (food_.empty()) {
     // Game finished, all food was eaten
@@ -85,6 +81,8 @@ void Game::Update() {
   for (auto &ghost : ghosts_) {
     if (ghost->position == pacman_.position) {
       pacman_.alive = false;
+      std::cout << "Game Over" << "\n";
+      std::cout << "Final score: " << GetScore() << "\n";
       break;
     }
   }
@@ -109,7 +107,7 @@ void Game::ReadLevelFromFile(string level_path, std::size_t grid_width, std::siz
     int ghost_count = 0;
     char c;
     SDL_Point point;
-    point.y = 1;
+    point.y = 0;
 
     while (getline(level_file, line)) {
       istringstream sline(line);
