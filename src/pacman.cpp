@@ -58,31 +58,8 @@ void Pacman::Move(Direction direction) {
   }
 }
 
-void Pacman::Update() {
+void Pacman::UpdateSprite() {
   Uint32 ticks = SDL_GetTicks();
   Uint32 animation_frame = (ticks / 100) % 3;
   sprite.x = SPRITE_SIZE * animation_frame;
-
-  switch (direction) {
-    case Direction::Up:
-      pos_y -= speed_;
-      break;
-
-    case Direction::Down:
-      pos_y += speed_;
-      break;
-
-    case Direction::Left:
-      pos_x -= speed_;
-      break;
-
-    case Direction::Right:
-      pos_x += speed_;
-      break;
-  }
-
-  pos_x = fmod(pos_x + grid_width, grid_width);
-  pos_y = fmod(pos_y + grid_height, grid_height);
-  position.x = pos_x;
-  position.y = pos_y;
 }

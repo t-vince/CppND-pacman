@@ -122,13 +122,13 @@ void Game::ReadLevelFromFile(string level_path, std::size_t grid_width, std::siz
             break;
 
           case 'P':
-            pacman_.position = point;
+            pacman_.SetPosition(point);
             break;
 
-          // case 'G':
-          //   ghost_count++;
-          //   ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, ghost_count));
-          //   break;
+          case 'G':
+            ghost_count++;
+            ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, ghost_count, point));
+            break;
 
           default:
             food_.push_back(point);

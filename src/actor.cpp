@@ -1,74 +1,35 @@
 #include "actor.h"
 #include "SDL.h"
 
-// void Actor::Move(Direction direction) {
-//   direction = direction;
-//   switch (direction) {
-//     case Direction::Up:
-//       sprite.x = 100;
-//       sprite.y = 100;
-//       break;
+void Actor::Update() {
+  this->UpdateSprite();
 
-//     case Direction::Down:
-//       sprite.x = 100;
-//       sprite.y = 110;
-//       break;
+  switch (direction) {
+    case Direction::Up:
+      pos_y_ -= speed_;
+      break;
 
-//     case Direction::Left:
-//       sprite.x = 100;
-//       sprite.y = 120;
-//       break;
+    case Direction::Down:
+      pos_y_ += speed_;
+      break;
 
-//     case Direction::Right:
-//       sprite.x = 100;
-//       sprite.y = 130;
-//       break;
-//   }
-// }
+    case Direction::Left:
+      pos_x_ -= speed_;
+      break;
 
-// void Actor::Update() {
-//   switch (direction) {
-//     case Direction::Up:
-//       pos_y -= speed_;
-//       break;
+    case Direction::Right:
+      pos_x_ += speed_;
+      break;
+  }
 
-//     case Direction::Down:
-//       pos_y += speed_;
-//       break;
+  pos_x_ = fmod(pos_x_ + grid_width_, grid_width_);
+  pos_y_ = fmod(pos_y_ + grid_height_, grid_height_);
+  position.x = pos_x_;
+  position.y = pos_y_;
+}
 
-//     case Direction::Left:
-//       pos_x -= speed_;
-//       break;
-
-//     case Direction::Right:
-//       pos_x += speed_;
-//       break;
-//   }
-
-//   pos_x = fmod(pos_x + grid_width_, grid_width_);
-//   pos_y = fmod(pos_y + grid_height_, grid_height_);
-// }
-
-// void Actor::Update() {
-//   switch (direction) {
-//     case Direction::Up:
-//       pos_y -= speed_;
-//       break;
-
-//     case Direction::Down:
-//       pos_y += speed_;
-//       break;
-
-//     case Direction::Left:
-//       pos_x -= speed_;
-//       break;
-
-//     case Direction::Right:
-//       pos_x += speed_;
-//       break;
-//   }
-
-//   pos_x = fmod(pos_x + grid_width_, grid_width_);
-//   pos_y = fmod(pos_y + grid_height_, grid_height_);
-// }
-
+void Actor::SetPosition(SDL_Point point) {
+    position = point;
+    pos_x_ = point.x;
+    pos_y_ = point.y;
+}

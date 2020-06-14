@@ -16,7 +16,7 @@ include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} src)
 # Find all executables
 #file(GLOB project_SRCS src/*.cpp src/*.h)
 #add_executable(PacMan ${project_SRCS})
-add_executable(PacMan src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/pacman.cpp assets/pacman-sprites.png)
+add_executable(PacMan src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/pacman.cpp src/actor.cpp src/ghost.cpp assets/pacman-sprites.png)
 
 #string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
 target_link_libraries(PacMan ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
