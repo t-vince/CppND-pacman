@@ -7,6 +7,9 @@
 #include "renderer.h"
 #include "pacman.h"
 #include "ghost.h"
+#include "grid.h"
+
+using std::vector;
 
 class Game {
  public:
@@ -17,9 +20,9 @@ class Game {
 
  private:
   Pacman pacman_;
-  std::vector<std::unique_ptr<Ghost>> ghosts_;
-  std::vector<SDL_Point> walls_;
-  std::vector<SDL_Point> food_;
+  vector<std::unique_ptr<Ghost>> ghosts_;
+  Grid grid_;
+  vector<SDL_Point> food_;
   
   std::random_device dev;
   std::mt19937 engine;

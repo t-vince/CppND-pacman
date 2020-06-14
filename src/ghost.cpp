@@ -1,13 +1,18 @@
 #include "ghost.h"
+#include "grid.h"
 #include <cmath>
 #include <iostream>
 
-// void Ghost::Move() {
-//   std::vector<Direction> direction;
+void Ghost::Move(Grid const &grid) {
+  std::vector<Direction> directions{Direction::Up, Direction::Down, Direction::Left, Direction::Right};
+  // directions.at
+  // for (auto const &wall : walls) {
+ 
+  // }
+  // directions.erase(Direction::Up);
   
-
-//   Move(direction);
-// }
+  Move(direction);
+}
 
 void Ghost::Move(Direction direction) {
 

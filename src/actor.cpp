@@ -1,8 +1,9 @@
 #include "actor.h"
 #include "SDL.h"
 #include "utilities.h"
+#include "grid.h"
 
-void Actor::Update(std::vector<SDL_Point> const &walls) {
+void Actor::Update(Grid const &grid) {
   this->AnimateSprite();
 
   SDL_Point old_position{static_cast<int>(pos_x_), static_cast<int>(pos_y_)};
@@ -30,12 +31,9 @@ void Actor::Update(std::vector<SDL_Point> const &walls) {
   pos_y_ = fmod(pos_y_ + grid_height_, grid_height_);
 
   // If actor hits a wall, he's stading still
-  auto newPosition = GetPosition();
-  for (auto const &wall : walls) {
-    if(newPosition == wall) {
-      pos_x_ = old_position.x;
-      pos_y_ = old_position.y;
-    }
+  if (grid.HasWallAt(pos_x_, pos_y_)) {
+    pos_x_ = old_position.x;
+    pos_y_ = old_position.y;
   }
 }
 

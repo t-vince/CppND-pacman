@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "SDL.h"
+#include "grid.h"
 
 #define SPRITE_SIZE 20
 
@@ -16,14 +17,12 @@ class Actor {
         grid_width_(grid_width),
         grid_height_(grid_height)
          {
-          //position.w = SPRITE_SIZE;
-          //position.h = SPRITE_SIZE;
           sprite.w = SPRITE_SIZE;
           sprite.h = SPRITE_SIZE;
         }
   virtual ~Actor() {};
 
-  void Update(std::vector<SDL_Point> const &walls);
+  void Update(Grid const &grid);
   void SetPosition(SDL_Point);
   SDL_Point GetPosition() const;
 
@@ -34,7 +33,6 @@ class Actor {
 
   int size{1};
   bool alive{true};
-  // SDL_Point position;
   SDL_Rect sprite;
   float speed_;
 

@@ -63,7 +63,7 @@ Renderer::~Renderer() {
 
 void Renderer::Render(Pacman const &pacman, 
                       std::vector<SDL_Point> const &food, 
-                      std::vector<SDL_Point> const &walls, 
+                      Grid const &grid, 
                       std::vector<std::unique_ptr<Ghost>> const &ghosts) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
@@ -75,11 +75,20 @@ void Renderer::Render(Pacman const &pacman,
 
   // Render walls
   SDL_SetRenderDrawColor(sdl_renderer, 0x16, 0x01, 0xF8, 0xFF);
-  for (auto const& wall : walls) {
-    block.x = wall.x * block.w;
-    block.y = wall.y * block.h;
-    SDL_RenderFillRect(sdl_renderer, &block);
+  for (auto y = 0; y < grid_height; y++) {
+    for (auto x = 0; x < grid_width; x++) {
+      if (grid.HasWallAt(x, y)) {
+        block.x = x * block.w;
+        block.y = y * block.h;
+        SDL_RenderFillRect(sdl_renderer, &block);
+      }
+    }
   }
+  // for (auto const& wall : walls) {
+  //   block.x = wall.x * block.w;
+  //   block.y = wall.y * block.h;
+  //   SDL_RenderFillRect(sdl_renderer, &block);
+  // }
 
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);

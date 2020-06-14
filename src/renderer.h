@@ -6,6 +6,7 @@
 #include "SDL.h"
 #include "pacman.h"
 #include "ghost.h"
+#include "grid.h"
 
 class Renderer {
  public:
@@ -15,7 +16,7 @@ class Renderer {
 
   void Render(Pacman const &pacman, 
               std::vector<SDL_Point> const &food, 
-              std::vector<SDL_Point> const &walls,
+              Grid const &grid,
               std::vector<std::unique_ptr<Ghost>> const &ghosts);
   void UpdateWindowTitle(int score, int fps);
 

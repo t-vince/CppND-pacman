@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "actor.h"
+#include "grid.h"
 #include "SDL.h"
 
 class Ghost : public Actor{
@@ -16,6 +17,7 @@ class Ghost : public Actor{
   }
   ~Ghost() = default;
 
+  void Move(Grid const &grid);
   void Move(Direction direction) override;
   void AnimateSprite() override;
 

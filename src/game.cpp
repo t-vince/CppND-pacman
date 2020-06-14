@@ -32,7 +32,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, pacman_);
     Update();
-    renderer.Render(pacman_, food_, walls_, ghosts_);
+    renderer.Render(pacman_, food_, grid_, ghosts_);
 
     frame_end = SDL_GetTicks();
 
@@ -69,10 +69,10 @@ void Game::Update() {
 
   // Update position ghosts
   for (auto &ghost : ghosts_) {
-    ghost->Update(walls_);
+    ghost->Update(grid_);
   }
 
-  pacman_.Update(walls_);
+  pacman_.Update(grid_);
 
   // int new_x = static_cast<int>(pacman_.pos_x);
   // int new_y = static_cast<int>(pacman_.pos_y);
@@ -112,11 +112,11 @@ void Game::ReadLevelFromFile(string level_path, std::size_t grid_width, std::siz
     while (getline(level_file, line)) {
       istringstream sline(line);
       point.x = 0;
-
       while (sline >> c) {
         switch (c) {
           case '#':
-            walls_.push_back(point);
+            grid_.SetWallAt(point.x, point.y);
+            //walls_.push_back(point);
             break;
 
           case 'P':
