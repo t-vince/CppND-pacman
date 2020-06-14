@@ -10,7 +10,10 @@ class Pacman : public Actor{
  public:
  // enum class Direction { kUp, kDown, kLeft, kRight };
 
-  Pacman(int grid_width, int grid_height) : Actor(grid_width, grid_height, 0.1f) {}
+  Pacman(int grid_width, int grid_height) : Actor(grid_width, grid_height, 0.1f) {
+    sprite.y = SPRITE_SIZE * 2;
+  }
+  ~Pacman() = default;
 
   void Move(Direction direction) override;
   void Update() override;

@@ -1,12 +1,20 @@
 #include "game.h"
 #include <iostream>
 #include "SDL.h"
+#include <fstream>
+#include <sstream>
+#include "utilities.h"
+#include "ghost.h"
+
+using std::string;
+using std::ifstream;
+using std::istringstream;
+using std::vector;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : pacman(grid_width, grid_height),
-      engine(dev()),
-      random_w(0, static_cast<int>(grid_width)),
-      random_h(0, static_cast<int>(grid_height)) {
+    : pacman_(grid_width, grid_height), engine(dev()) {
+
+  ReadLevelFromFile("./assets/level-1.txt", grid_width, grid_height);
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -18,20 +26,13 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
-  // Add  ghosts
-  int grid_height = pacman.grid_width;
-  int grid_width = pacman.grid_height;
-  ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, 1));
-  ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, 2));
-  ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, 3));
-
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, pacman);
+    controller.HandleInput(running, pacman_);
     Update();
-    renderer.Render(pacman, food);
+    renderer.Render(pacman_, food_, walls_, ghosts_);
 
     frame_end = SDL_GetTicks();
 
@@ -57,20 +58,88 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 }
 
 void Game::Update() {
-  if (!pacman.alive) return;
+  if (!pacman_.alive) {
+    std::cout << "Game Over" << "\n";
+    std::cout << "Final score: " << GetScore() << "\n";
+    return;
+  }
 
-  pacman.Update();
+  if (food_.empty()) {
+    // Game finished, all food was eaten
+    std::cout << "Congratz!" << "\n";
+    std::cout << "Final score: " << GetScore() << "\n";
+    return;
+  }
 
-  int new_x = static_cast<int>(pacman.pos_x);
-  int new_y = static_cast<int>(pacman.pos_y);
+  // Update position ghosts
+  for (auto &ghost : ghosts_) {
+    ghost->Update();
+  }
 
-  // // Check if there's food over here
-  // if (food.x == new_x && food.y == new_y) {
-  //   score++;
-  //   // Grow pacman and increase speed.
-  //   pacman.speed_ += 0.02;
-  // }
+  pacman_.Update();
+
+  // int new_x = static_cast<int>(pacman_.pos_x);
+  // int new_y = static_cast<int>(pacman_.pos_y);
+
+  // Check if Pac-Man got eaten by a ghost
+  for (auto &ghost : ghosts_) {
+    if (ghost->position == pacman_.position) {
+      pacman_.alive = false;
+      break;
+    }
+  }
+  
+  // Check if Pac-Man ate food (if so, remove food and increase score)
+  for(auto food = food_.begin(); food != food_.end();) {
+    if (pacman_.position == *food) {
+      score++;
+      food_.erase(food);
+    } else {
+      food++;
+    }
+  }
 }
 
 int Game::GetScore() const { return score; }
-int Game::GetSize() const { return pacman.size; }
+
+void Game::ReadLevelFromFile(string level_path, std::size_t grid_width, std::size_t grid_height) {
+  ifstream level_file (level_path);
+  if (level_file) {
+    string line;
+    int ghost_count = 0;
+    char c;
+    SDL_Point point;
+    point.y = 1;
+
+    while (getline(level_file, line)) {
+      istringstream sline(line);
+      point.x = 0;
+
+      while (sline >> c) {
+        switch (c) {
+          case '#':
+            walls_.push_back(point);
+            break;
+
+          case 'P':
+            pacman_.position = point;
+            break;
+
+          // case 'G':
+          //   ghost_count++;
+          //   ghosts_.emplace_back(std::make_unique<Ghost>(grid_width, grid_height, ghost_count));
+          //   break;
+
+          default:
+            food_.push_back(point);
+        }
+        point.x++;
+      }
+
+      point.y++;
+    }
+    
+  } else {
+    throw std::invalid_argument("Level file does not exist");
+  }
+}

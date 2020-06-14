@@ -38,26 +38,21 @@
 
 void Pacman::Move(Direction direction) {
   this->direction = direction;
-//   sprite.w = SPRITE_SIZE;
-//   sprite.h = SPRITE_SIZE;
+  sprite.x = 0;
   switch (direction) {
     case Direction::Up:
-      sprite.x = 0;
       sprite.y = SPRITE_SIZE * 2;
       break;
 
     case Direction::Down:
-      sprite.x = 0;
       sprite.y = SPRITE_SIZE * 3;
       break;
 
     case Direction::Left:
-      sprite.x = 0;
       sprite.y = 0;
       break;
 
     case Direction::Right:
-      sprite.x = 0;
       sprite.y = SPRITE_SIZE;
       break;
   }

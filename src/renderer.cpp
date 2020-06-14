@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <SDL_image.h>
+#include "ghost.h"
 
 #define SPRITES_PATH "./assets/pacman_sprites.bmp"
 
@@ -60,7 +61,10 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Pacman const pacman, SDL_Point const &food) {
+void Renderer::Render(Pacman const &pacman, 
+                      std::vector<SDL_Point> const &food, 
+                      std::vector<SDL_Point> const &walls, 
+                      std::vector<std::unique_ptr<Ghost>> const &ghosts) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -69,27 +73,33 @@ void Renderer::Render(Pacman const pacman, SDL_Point const &food) {
   SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF);
   SDL_RenderClear(sdl_renderer);
 
+  // Render walls
+  SDL_SetRenderDrawColor(sdl_renderer, 0x16, 0x01, 0xF8, 0xFF);
+  for (auto const& wall : walls) {
+    block.x = wall.x * block.w;
+    block.y = wall.y * block.h;
+    SDL_RenderFillRect(sdl_renderer, &block);
+  }
+
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
-  block.x = food.x * block.w;
-  block.y = food.y * block.h;
-  SDL_RenderFillRect(sdl_renderer, &block);
+  for (auto const& f : food) {
+    block.x = f.x * block.w;
+    block.y = f.y * block.h;
+    SDL_RenderFillRect(sdl_renderer, &block);
+  }
+
+  // Render ghosts
+  for (auto const &ghost : ghosts) {
+    block.x = ghost->position.x * block.w;
+    block.y = ghost->position.y * block.h;
+    SDL_RenderCopy(sdl_renderer, spritesheet_, &ghost->sprite, &block);
+  }
 
   // Render pacman
-//   block.x = static_cast<int>(pacman.pos_x) * block.w;
-//   block.y = static_cast<int>(pacman.pos_y) * block.h;
-//   if (pacman.alive) {
-//     SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
-//   } else {
-//     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
-//   }
-//  SDL_RenderFillRect(sdl_renderer, &block);
-  //SDL_BlitSurface(spritesheet_, &pacman.sprite, sdl_window, *pacman.sprite);
-  // SDL_Rect srcrect = { 0, 0, 17, 17 };
-  // SDL_Rect dstrect = { 10, 10, 15, 15 };
-  //std::cout << pacman.sprite.x << " " << pacman.sprite.y << " " << pacman.sprite.w << " " << pacman.sprite.h << "\n";
-  //std::cout << pacman.position.x << " " << pacman.position.y << " " << pacman.position.w << " " << pacman.position.h << "\n";
-  SDL_RenderCopy(sdl_renderer, spritesheet_, &pacman.sprite, &pacman.position);
+  block.x = pacman.position.x * block.w;
+  block.y = pacman.position.y * block.h;
+  SDL_RenderCopy(sdl_renderer, spritesheet_, &pacman.sprite, &block);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);

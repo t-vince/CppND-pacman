@@ -14,13 +14,13 @@ class Game {
   void Run(Controller const &controller, Renderer &renderer,
            std::size_t target_frame_duration);
   int GetScore() const;
-  int GetSize() const;
 
  private:
-  Pacman pacman;
-  SDL_Point food;
+  Pacman pacman_;
   std::vector<std::unique_ptr<Ghost>> ghosts_;
-
+  std::vector<SDL_Point> walls_;
+  std::vector<SDL_Point> food_;
+  
   std::random_device dev;
   std::mt19937 engine;
   std::uniform_int_distribution<int> random_w;
@@ -29,6 +29,7 @@ class Game {
   int score{0};
 
   void Update();
+  void ReadLevelFromFile(std::string file, std::size_t grid_width, std::size_t grid_height);
 };
 
 #endif
