@@ -17,7 +17,7 @@ class Ghost : public Actor{
   ~Ghost() = default;
 
   void Move(Direction direction) override;
-  void UpdateSprite() override;
+  void AnimateSprite() override;
 
  private:
    const int ghost_number_;

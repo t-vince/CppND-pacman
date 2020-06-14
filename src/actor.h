@@ -23,16 +23,18 @@ class Actor {
         }
   virtual ~Actor() {};
 
-  void Update();
+  void Update(std::vector<SDL_Point> const &walls);
   void SetPosition(SDL_Point);
-  virtual void UpdateSprite() = 0;
+  SDL_Point GetPosition() const;
+
+  virtual void AnimateSprite() = 0;
   virtual void Move(Direction direction) = 0;
 
   Direction direction = Direction::Up;
 
   int size{1};
   bool alive{true};
-  SDL_Point position;
+  // SDL_Point position;
   SDL_Rect sprite;
   float speed_;
 

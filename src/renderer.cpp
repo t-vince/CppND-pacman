@@ -92,14 +92,14 @@ void Renderer::Render(Pacman const &pacman,
 
   // Render ghosts
   for (auto const &ghost : ghosts) {
-    block.x = ghost->position.x * block.w;
-    block.y = ghost->position.y * block.h;
+    block.x = ghost->GetPosition().x * block.w;
+    block.y = ghost->GetPosition().y * block.h;
     SDL_RenderCopy(sdl_renderer, spritesheet_, &ghost->sprite, &block);
   }
 
   // Render pacman
-  block.x = pacman.position.x * block.w;
-  block.y = pacman.position.y * block.h;
+  block.x = pacman.GetPosition().x * block.w;
+  block.y = pacman.GetPosition().y * block.h;
   SDL_RenderCopy(sdl_renderer, spritesheet_, &pacman.sprite, &block);
 
   // Update Screen

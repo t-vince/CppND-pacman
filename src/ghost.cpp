@@ -2,7 +2,15 @@
 #include <cmath>
 #include <iostream>
 
+// void Ghost::Move() {
+//   std::vector<Direction> direction;
+  
+
+//   Move(direction);
+// }
+
 void Ghost::Move(Direction direction) {
+
   this->direction = direction;
   switch (direction) {
     case Direction::Up:
@@ -23,7 +31,7 @@ void Ghost::Move(Direction direction) {
   }
 }
 
-void Ghost::UpdateSprite() {
+void Ghost::AnimateSprite() {
   Uint32 ticks = SDL_GetTicks();
   Uint32 animation_frame = (ticks / 100) % 2;
   sprite.x = SPRITE_SIZE * animation_frame;

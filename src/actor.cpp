@@ -1,8 +1,11 @@
 #include "actor.h"
 #include "SDL.h"
+#include "utilities.h"
 
-void Actor::Update() {
-  this->UpdateSprite();
+void Actor::Update(std::vector<SDL_Point> const &walls) {
+  this->AnimateSprite();
+
+  SDL_Point old_position{static_cast<int>(pos_x_), static_cast<int>(pos_y_)};
 
   switch (direction) {
     case Direction::Up:
@@ -22,14 +25,25 @@ void Actor::Update() {
       break;
   }
 
+  // When going trough the side of the map, re-appear on the other side
   pos_x_ = fmod(pos_x_ + grid_width_, grid_width_);
   pos_y_ = fmod(pos_y_ + grid_height_, grid_height_);
-  position.x = pos_x_;
-  position.y = pos_y_;
+
+  // If actor hits a wall, he's stading still
+  auto newPosition = GetPosition();
+  for (auto const &wall : walls) {
+    if(newPosition == wall) {
+      pos_x_ = old_position.x;
+      pos_y_ = old_position.y;
+    }
+  }
 }
 
 void Actor::SetPosition(SDL_Point point) {
-    position = point;
     pos_x_ = point.x;
     pos_y_ = point.y;
+}
+
+SDL_Point Actor::GetPosition() const {
+    return SDL_Point{static_cast<int>(pos_x_), static_cast<int>(pos_y_)};
 }

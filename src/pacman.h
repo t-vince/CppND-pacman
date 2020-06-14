@@ -14,7 +14,7 @@ class Pacman : public Actor {
   ~Pacman() = default;
 
   void Move(Direction direction) override;
-  void UpdateSprite() override;
+  void AnimateSprite() override;
 
  private:
 };

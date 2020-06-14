@@ -69,17 +69,17 @@ void Game::Update() {
 
   // Update position ghosts
   for (auto &ghost : ghosts_) {
-    ghost->Update();
+    ghost->Update(walls_);
   }
 
-  pacman_.Update();
+  pacman_.Update(walls_);
 
   // int new_x = static_cast<int>(pacman_.pos_x);
   // int new_y = static_cast<int>(pacman_.pos_y);
 
   // Check if Pac-Man got eaten by a ghost
   for (auto &ghost : ghosts_) {
-    if (ghost->position == pacman_.position) {
+    if (ghost->GetPosition() == pacman_.GetPosition()) {
       pacman_.alive = false;
       std::cout << "Game Over" << "\n";
       std::cout << "Final score: " << GetScore() << "\n";
@@ -89,7 +89,7 @@ void Game::Update() {
   
   // Check if Pac-Man ate food (if so, remove food and increase score)
   for(auto food = food_.begin(); food != food_.end();) {
-    if (pacman_.position == *food) {
+    if (pacman_.GetPosition() == *food) {
       score++;
       food_.erase(food);
     } else {
