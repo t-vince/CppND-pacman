@@ -3,8 +3,10 @@
 #define GHOST_H
 
 #include <vector>
+#include <future>
 #include "actor.h"
 #include "grid.h"
+#include "pacman.h"
 #include "SDL.h"
 
 class Ghost : public Actor{
@@ -17,11 +19,13 @@ class Ghost : public Actor{
   }
   ~Ghost() = default;
 
-  void Move(Grid const &grid);
+  void CalculateNextMove(Grid const &grid, Pacman &pacman, std::promise<void>&& prms);
   void Move(Direction direction) override;
   void AnimateSprite() override;
 
  private:
+   Direction GetOppositeDirection(Direction direction);
+   bool CanMove(Direction const &direction, Grid const &grid, SDL_Point const &position);
    const int ghost_number_;
 };
 

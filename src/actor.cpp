@@ -30,7 +30,7 @@ void Actor::Update(Grid const &grid) {
   pos_x_ = fmod(pos_x_ + grid_width_, grid_width_);
   pos_y_ = fmod(pos_y_ + grid_height_, grid_height_);
 
-  // If actor hits a wall, he's stading still
+  // If actor hits a wall, he's standing still
   if (grid.HasWallAt(pos_x_, pos_y_)) {
     pos_x_ = old_position.x;
     pos_y_ = old_position.y;

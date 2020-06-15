@@ -23,11 +23,6 @@ class Game {
   vector<std::unique_ptr<Ghost>> ghosts_;
   Grid grid_;
   vector<SDL_Point> food_;
-  
-  std::random_device dev;
-  std::mt19937 engine;
-  std::uniform_int_distribution<int> random_w;
-  std::uniform_int_distribution<int> random_h;
 
   int score{0};
 

@@ -5,6 +5,8 @@
 #include <sstream>
 #include "utilities.h"
 #include "ghost.h"
+#include <thread>
+#include <future>
 
 using std::string;
 using std::ifstream;
@@ -12,7 +14,7 @@ using std::istringstream;
 using std::vector;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : pacman_(grid_width, grid_height), engine(dev()) {
+    : pacman_(grid_width, grid_height) {
 
   ReadLevelFromFile("./assets/level-1.txt", grid_width, grid_height);
 }
@@ -67,15 +69,26 @@ void Game::Update() {
     return;
   }
 
-  // Update position ghosts
+  // Update Pac-Man
+  pacman_.Update(grid_);
+
+  // Update position of ghosts
+  std::vector<std::thread> threads;
+  std::vector<std::future<void>> futures;
+  for (auto &ghost : ghosts_) {
+    std::promise<void> prms;
+    futures.emplace_back(prms.get_future());
+    threads.emplace_back(&Ghost::CalculateNextMove, ghost.get(), std::ref(grid_), std::ref(pacman_), std::move(prms));
+  }
+
+  // wait for the results
+  std::for_each(futures.begin(), futures.end(), [](std::future<void> &ftr) {
+      ftr.wait_for(std::chrono::milliseconds(100));
+  });
+
   for (auto &ghost : ghosts_) {
     ghost->Update(grid_);
   }
-
-  pacman_.Update(grid_);
-
-  // int new_x = static_cast<int>(pacman_.pos_x);
-  // int new_y = static_cast<int>(pacman_.pos_y);
 
   // Check if Pac-Man got eaten by a ghost
   for (auto &ghost : ghosts_) {
@@ -85,6 +98,12 @@ void Game::Update() {
       std::cout << "Final score: " << GetScore() << "\n";
       break;
     }
+  }
+
+  // Thread barrier
+  for (auto &t : threads) {
+    if(t.joinable())
+      t.join();
   }
   
   // Check if Pac-Man ate food (if so, remove food and increase score)
@@ -116,7 +135,6 @@ void Game::ReadLevelFromFile(string level_path, std::size_t grid_width, std::siz
         switch (c) {
           case '#':
             grid_.SetWallAt(point.x, point.y);
-            //walls_.push_back(point);
             break;
 
           case 'P':

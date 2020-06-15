@@ -84,11 +84,6 @@ void Renderer::Render(Pacman const &pacman,
       }
     }
   }
-  // for (auto const& wall : walls) {
-  //   block.x = wall.x * block.w;
-  //   block.y = wall.y * block.h;
-  //   SDL_RenderFillRect(sdl_renderer, &block);
-  // }
 
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
@@ -116,6 +111,6 @@ void Renderer::Render(Pacman const &pacman,
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Pacman Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+  std::string title{"Pac-Man Score: " + std::to_string(score) + " | FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
