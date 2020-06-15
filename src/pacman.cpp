@@ -3,8 +3,6 @@
 #include <iostream>
 
 void Pacman::Move(Direction direction) {
-
-  
   sprite.x = 0;
   switch (direction) {
     case Direction::Up:
@@ -28,6 +26,6 @@ void Pacman::Move(Direction direction) {
 
 void Pacman::AnimateSprite() {
   Uint32 ticks = SDL_GetTicks();
-  Uint32 animation_frame = (ticks / 150) % 3;
+  Uint32 animation_frame = (ticks / 150) % 3; // alternate 3 sprites
   sprite.x = SPRITE_SIZE * animation_frame;
 }

@@ -19,11 +19,11 @@ class Game {
   int GetScore() const;
 
  private:
+  bool running = true;
   Pacman pacman_;
   vector<std::unique_ptr<Ghost>> ghosts_;
   Grid grid_;
   vector<SDL_Point> food_;
-
   int score{0};
 
   void Update();

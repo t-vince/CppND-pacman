@@ -16,7 +16,7 @@ class Pacman : public Actor {
   void Move(Direction direction) override;
   void AnimateSprite() override;
 
- private:
+  bool alive{true};
 };
 
 #endif

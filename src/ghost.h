@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <future>
+
 #include "actor.h"
 #include "grid.h"
 #include "pacman.h"
@@ -24,8 +25,8 @@ class Ghost : public Actor{
   void AnimateSprite() override;
 
  private:
-   Direction GetOppositeDirection(Direction direction);
-   bool CanMove(Direction const &direction, Grid const &grid, SDL_Point const &position);
+   Direction GetOppositeDirection(Direction const &direction) const;
+   bool CanMoveTo(Direction const &direction, Grid const &grid, SDL_Point const &position) const;
    const int ghost_number_;
 };
 

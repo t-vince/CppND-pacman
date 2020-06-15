@@ -15,11 +15,7 @@ class Actor {
   Actor(int grid_width, int grid_height, float speed)
       : speed_(speed),
         grid_width_(grid_width),
-        grid_height_(grid_height)
-         {
-          sprite.w = SPRITE_SIZE;
-          sprite.h = SPRITE_SIZE;
-        }
+        grid_height_(grid_height) {}
   virtual ~Actor() {};
 
   void Update(Grid const &grid);
@@ -30,13 +26,10 @@ class Actor {
   virtual void Move(Direction direction) = 0;
 
   Direction direction = Direction::Up;
-
-  int size{1};
-  bool alive{true};
-  SDL_Rect sprite;
-  float speed_;
-
+  SDL_Rect sprite{0, 0, SPRITE_SIZE, SPRITE_SIZE};
+  
  private:
+   float speed_;
    float pos_x_{0.0};
    float pos_y_{0.0};
    int grid_width_;

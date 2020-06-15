@@ -2,6 +2,7 @@
 #include "pacman.h"
 #include "grid.h"
 #include "SDL.h"
+
 #include <cmath>
 #include <iostream>
 #include <stdlib.h>
@@ -13,7 +14,7 @@ void Ghost::CalculateNextMove(Grid const &grid, Pacman &pacman, std::promise<voi
   auto current_position = GetPosition();
   auto pacman_position = pacman.GetPosition();
 
-  if (CanMove(direction, grid, current_position)) {
+  if (CanMoveTo(direction, grid, current_position)) {
     if (rand() % 100 > (ghost_number_*5))
       return;
   }
@@ -21,37 +22,38 @@ void Ghost::CalculateNextMove(Grid const &grid, Pacman &pacman, std::promise<voi
   // Different ghosts have a different chance of making a more intelligent next-step decision
   if (rand() % 100 > (ghost_number_*10)) {
     if (pacman_position.x < current_position.x) {
-      if (CanMove(Direction::Left, grid, current_position)) {
+      if (CanMoveTo(Direction::Left, grid, current_position)) {
         directions.push_back(Direction::Left);
       }
     } else {
-      if (CanMove(Direction::Right, grid, current_position)) {
+      if (CanMoveTo(Direction::Right, grid, current_position)) {
         directions.push_back(Direction::Right);
       }
     }
 
     if (pacman_position.y < current_position.y) {
-      if (CanMove(Direction::Up, grid, current_position)) {
+      if (CanMoveTo(Direction::Up, grid, current_position)) {
         directions.push_back(Direction::Up);
       }
     } else {
-      if (CanMove(Direction::Down, grid, current_position)) {
+      if (CanMoveTo(Direction::Down, grid, current_position)) {
         directions.push_back(Direction::Down);
       }
     }
   }
 
+  // If directions is still empty, either no possible were found or ghost was not intelligent enough
   if (directions.size() == 0) {
-    if (CanMove(Direction::Right, grid, current_position)) {
+    if (CanMoveTo(Direction::Right, grid, current_position)) {
       directions.push_back(Direction::Right);
     }
-    if (CanMove(Direction::Left, grid, current_position)) {
+    if (CanMoveTo(Direction::Left, grid, current_position)) {
       directions.push_back(Direction::Left);
     }
-    if (CanMove(Direction::Down, grid, current_position)) {
+    if (CanMoveTo(Direction::Down, grid, current_position)) {
       directions.push_back(Direction::Down);
     }
-    if (CanMove(Direction::Up, grid, current_position)) {
+    if (CanMoveTo(Direction::Up, grid, current_position)) {
       directions.push_back(Direction::Up);
     }
   }
@@ -60,20 +62,19 @@ void Ghost::CalculateNextMove(Grid const &grid, Pacman &pacman, std::promise<voi
     throw std::invalid_argument("Ghost is stuck");
   }
 
-  // Small chance of going back
-  Direction opposite = GetOppositeDirection(direction);
   Direction new_direction = directions.at(rand() % directions.size());
+
+  // Only allow going back if it's the only option
+  Direction opposite = GetOppositeDirection(direction);
   if (opposite == new_direction && directions.size() > 1) {
-    if (rand() % 100 > 5) { // Only 5% chance to actually go back
       new_direction = direction;
-    }
   }
 
-  Move(new_direction);
+  Move(std::move(new_direction));
   prms.set_value();
 }
 
-Actor::Direction Ghost::GetOppositeDirection(Direction direction) {
+Actor::Direction Ghost::GetOppositeDirection(Direction const &direction) const {
   switch(direction) {
     case Direction::Up:
       return Direction::Down;
@@ -86,7 +87,7 @@ Actor::Direction Ghost::GetOppositeDirection(Direction direction) {
   }
 }
 
-bool Ghost::CanMove(Direction const &direction, Grid const &grid, SDL_Point const &position) {
+bool Ghost::CanMoveTo(Direction const &direction, Grid const &grid, SDL_Point const &position) const {
   switch(direction) {
     case Direction::Up:
       return (!grid.HasWallAt(position.x, position.y - 1));
@@ -100,7 +101,6 @@ bool Ghost::CanMove(Direction const &direction, Grid const &grid, SDL_Point cons
 }
 
 void Ghost::Move(Direction direction) {
-  this->direction = direction;
   switch (direction) {
     case Direction::Up:
       sprite.x = 0;
@@ -118,6 +118,7 @@ void Ghost::Move(Direction direction) {
       sprite.x = SPRITE_SIZE * 6;
       break;
   }
+  this->direction = direction;
 }
 
 void Ghost::AnimateSprite() {

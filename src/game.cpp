@@ -26,7 +26,6 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
-  bool running = true;
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -57,6 +56,9 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
+
+  // Delay before closing the game
+  std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 }
 
 void Game::Update() {
@@ -64,15 +66,16 @@ void Game::Update() {
 
   if (food_.empty()) {
     // Game finished, all food was eaten
-    std::cout << "Congratz!" << "\n";
+    std::cout << "\n" << "   ~ You win ~   " << "\n" << "\n";
     std::cout << "Final score: " << GetScore() << "\n";
+    running = false;
     return;
   }
 
   // Update Pac-Man
   pacman_.Update(grid_);
 
-  // Update position of ghosts
+  // Calculate next direction
   std::vector<std::thread> threads;
   std::vector<std::future<void>> futures;
   for (auto &ghost : ghosts_) {
@@ -86,6 +89,7 @@ void Game::Update() {
       ftr.wait_for(std::chrono::milliseconds(100));
   });
 
+  // Update position of ghosts
   for (auto &ghost : ghosts_) {
     ghost->Update(grid_);
   }
@@ -94,8 +98,9 @@ void Game::Update() {
   for (auto &ghost : ghosts_) {
     if (ghost->GetPosition() == pacman_.GetPosition()) {
       pacman_.alive = false;
-      std::cout << "Game Over" << "\n";
+      std::cout << "\n" << "   ~ Game Over ~   " << "\n" << "\n";
       std::cout << "Final score: " << GetScore() << "\n";
+      running = false;
       break;
     }
   }

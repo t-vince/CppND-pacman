@@ -5,8 +5,6 @@
 
 void Controller::ChangeDirection(Pacman &pacman, Pacman::Direction input) const {
   pacman.Move(std::move(input));
-  //pacman.Move(input);
-  //pacman.direction = input;
   return;
 }
 
